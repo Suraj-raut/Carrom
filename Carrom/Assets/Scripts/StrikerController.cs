@@ -11,9 +11,7 @@ public class StrikerController : MonoBehaviour
 	private Slider StrikerSlider;
 	
 	[SerializeField]
-	private Transform StrikerBG;
-	
-	private bool StrikerForce;
+	private LineRenderer Line;
 	
 	RaycastHit2D hit;
 	
@@ -23,76 +21,122 @@ public class StrikerController : MonoBehaviour
 	private Transform ForcePoint;
 	
 	private float force = 50.0f;
+	private Vector2 direction;
+	private Vector3 mousePosition;
+	private Vector3 mousePosition2;
 	
-	private Vector2 startPos;
-	public int pixelDistanceToDetect = 50;
-	private float sensitivity = 10f;
-	private float movement = 0f;
-	public float moveSpeed = 600f;
+	private bool hasStriked = false;
+	private bool isStrikerSet = false;
+	
+	private Vector3 startPos;
+	
+	
+	
 	
 	void Start()
 	{
+		startPos = transform.position;
 		StrikerSlider.onValueChanged.AddListener(StrikerXPosition);
 		RB = GetComponent<Rigidbody2D>();
 	}
 	
 	void Update()
 	{
-		if(Input.GetMouseButtonDown(0))
+		Line.enabled = false;
+		mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+		mousePosition2 = new Vector3(-mousePosition.x, -mousePosition.y, mousePosition.z);
+		
+		if(Input.GetMouseButtonUp(0) && RB.velocity.magnitude == 0 && isStrikerSet)
 		{
-			hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector3.forward);
-			startPos = Input.mousePosition;
-			
-			if(hit.collider)
-			{
-				if(hit.transform.name == "Striker")
-			    {
-				StrikerForce = true;
-					
-			    }
-				
-			   if(StrikerForce)
-			    {
-				//StrikerBG.LookAt(hit.point);
-		          if(Input.mousePosition.x <= startPos.x - pixelDistanceToDetect)    
-			      {
-				    Debug.Log("Swipe left");
-				    movement = sensitivity;
-					StrikerForce = false;
-				
-			      }
-			      else if(Input.mousePosition.x >= startPos.x + pixelDistanceToDetect) 
-			      {
-				    Debug.Log("Swipe Right");
-				     movement = -sensitivity;
-					  StrikerForce = false;
-			      }
-			    }
-				
-				float ScaleValue = Vector2.Distance(transform.position, hit.point);
-				StrikerBG.localScale = new Vector3(ScaleValue, ScaleValue, ScaleValue);
-				
-				Debug.Log(hit.transform.name);
-			}
-			
+			StrikerShoot();
 		}
-		 
+		
+		hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+		if(hit.collider != null)
+		{
+			if(Input.GetMouseButtonDown(0))
+		    {
+			  if(!isStrikerSet)
+			  {
+				isStrikerSet = true;
+			  }
+		    }
+		}
+			
+		
+		
+		if(isStrikerSet && RB.velocity.magnitude == 0)
+		{
+			Line.enabled = true;
+			Line.SetPosition(0, transform.position);
+		    Line.SetPosition(1, mousePosition2);
+		}
+		
+		if(RB.velocity.magnitude < 0.2f && RB.velocity.magnitude != 0)
+		{
+			StrikerReset();
+		}
+		
+		if(mousePosition2.x < -2.34f)
+		{
+			mousePosition2.y = -2.34f;
+		}
+		if(mousePosition2.x > 2.34f)
+		{
+			mousePosition2.x = 2.34f;
+		}
+		if(mousePosition2.y < -2.34f)
+		{
+			mousePosition2.y = -2.34f;
+		}
+		if(mousePosition2.y > 2.34f)
+		{
+			mousePosition2.y = 2.34f;
+		}
 		
 	}
 	
-	private void FixedUpdate()                                                 //-- rotate the player around the center ---//
+	void StrikerShoot()
 	{
-		StrikerBG.transform.RotateAround(Vector3.zero, Vector3.forward, movement * Time.fixedDeltaTime * -moveSpeed);
-		
-		if(Input.GetMouseButtonUp(0))
+		float x = 0;
+		if(isStrikerSet && RB.velocity.magnitude == 0)
 		{
-			RB.AddForce(ForcePoint.position * force);
+			x = Vector2.Distance(transform.position, mousePosition);
 		}
+		direction = mousePosition2 - transform.position;
+		direction.Normalize();
+		RB.AddForce(direction * x * 300);
+		hasStriked = true;
 		
 	}
 	
     void StrikerXPosition(float Value)
     {
-	  transform.position = new Vector3(Value, -1.57f, 0);
-    }
+	 
+		if(!hasStriked && !isStrikerSet)
+		{
+			transform.position = new Vector3(Value, -1.57f, 0);
+	  
+         }
+	}
+	
+	void StrikerReset()
+	{
+		RB.velocity = Vector2.zero;
+	    transform.position = startPos;
+		hasStriked = false;
+		isStrikerSet = false;
+		Line.enabled = true;
+	}
+	
+	void OnTriggerEnter2D(Collider2D collision)
+	{
+	
+			if(collision.gameObject.tag == "Coins")
+			{
+				Debug.Log("Striker overlaps token");
+			}
+			
+		
+	}
 } 
