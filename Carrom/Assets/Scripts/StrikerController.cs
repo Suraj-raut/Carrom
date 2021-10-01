@@ -26,15 +26,25 @@ public class StrikerController : MonoBehaviour
 	private Vector3 mousePosition2;
 	
 	private bool hasStriked = false;
+	public bool isOverlap;
+	
+	
 	private bool isStrikerSet = false;
+	public bool ISStrikerSet
+	{
+		get{ return isStrikerSet; }
+		set{ isStrikerSet = value; }
+	}
 	
 	private Vector3 startPos;
+	//public GameObject StartCollider;
 	
 	
-	
-	
+
 	void Start()
 	{
+		//isOverlap = StartCollider.GetComponent<StartCollider>().overlap;
+		
 		startPos = transform.position;
 		StrikerSlider.onValueChanged.AddListener(StrikerXPosition);
 		RB = GetComponent<Rigidbody2D>();
@@ -42,11 +52,18 @@ public class StrikerController : MonoBehaviour
 	
 	void Update()
 	{
+
 		Line.enabled = false;
 		mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		mousePosition2 = new Vector3(-mousePosition.x, -mousePosition.y, mousePosition.z);
 		
-		if(Input.GetMouseButtonUp(0) && RB.velocity.magnitude == 0 && isStrikerSet)
+		if(isOverlap)
+		{
+			Line.enabled = false;
+			isStrikerSet = false;
+		}
+		
+		if(Input.GetMouseButtonUp(0) && RB.velocity.magnitude == 0 && isStrikerSet && !isOverlap)
 		{
 			StrikerShoot();
 		}
@@ -72,7 +89,7 @@ public class StrikerController : MonoBehaviour
 		    Line.SetPosition(1, mousePosition2);
 		}
 		
-		if(RB.velocity.magnitude < 0.2f && RB.velocity.magnitude != 0)
+		if(RB.velocity.magnitude < 0.2f && RB.velocity.magnitude != 0 && isStrikerSet)
 		{
 			StrikerReset();
 		}
@@ -93,6 +110,8 @@ public class StrikerController : MonoBehaviour
 		{
 			mousePosition2.y = 2.34f;
 		}
+		
+		
 		
 	}
 	
@@ -129,14 +148,5 @@ public class StrikerController : MonoBehaviour
 		Line.enabled = true;
 	}
 	
-	void OnTriggerEnter2D(Collider2D collision)
-	{
-	
-			if(collision.gameObject.tag == "Coins")
-			{
-				Debug.Log("Striker overlaps token");
-			}
-			
-		
-	}
+
 } 
