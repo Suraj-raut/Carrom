@@ -18,6 +18,8 @@ public class StrikerController : MonoBehaviour
 	
 	[SerializeField]
 	private Transform ForcePoint;
+	[SerializeField]
+	private GameObject StrikerGlow;
 	
 	private float force = 50.0f;
 	private Vector2 direction;
@@ -36,11 +38,11 @@ public class StrikerController : MonoBehaviour
 	}
 	
 	private Vector3 startPos;
-	
 
+	
 	void Start()
 	{
-	
+	     
 		startPos = transform.position;                                   //--Get the initial position of striker--//
 		StrikerSlider.onValueChanged.AddListener(StrikerXPosition);  //--If the slider is move, the slider value given to method-//
 		RB = GetComponent<Rigidbody2D>();
@@ -48,11 +50,12 @@ public class StrikerController : MonoBehaviour
 	
 	void Update()
 	{
-
+        
 		Line.enabled = false;
-		mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);                 //--Get the mouse position--//
-		mousePosition2 = new Vector3(-mousePosition.x, -mousePosition.y, mousePosition.z);   //--Set the touch point according to                                                                                             mouse position--//
 		
+		mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);                 //--Get the mouse position--//
+		mousePosition2 = new Vector3(-mousePosition.x, -mousePosition.y, mousePosition.z);   //--Set the touch point according to                                                                                             mouse position--/
+			
 		if(isOverlap)                                             //--If the token overlaps with striker when striker is not set--// 
 		{
 			Line.enabled = false;                                 //--Line is disabled--//
@@ -90,6 +93,23 @@ public class StrikerController : MonoBehaviour
 			StrikerReset();
 		}
 		
+		if(!hasStriked)                                     //---Striker glow set active to false after we hit--//
+		{
+			float powerScale = mousePosition2.x;
+			StrikerGlow.SetActive(true);
+			ForcePoint.transform.localScale = new Vector3(Mathf.Abs(powerScale), Mathf.Abs(powerScale), 0);
+		}
+		else
+		{
+			StrikerGlow.SetActive(false);
+			ForcePoint.transform.localScale = Vector3.zero;
+		}
+		
+		if(hasStriked &&  RB.velocity.magnitude == 0)     //--Set the striker to intial position--//
+		{
+			transform.position = startPos;  
+		}
+		
 
 		
 	}
@@ -99,7 +119,7 @@ public class StrikerController : MonoBehaviour
 		float x = 0;
 		if(isStrikerSet && RB.velocity.magnitude == 0)                  
 		{
-			x = Vector2.Distance(transform.position, mousePosition);    //--Get the distance value between touch point and striker--//
+			x = Vector2.Distance(transform.position, mousePosition);  //--Get the distance value between touch point and striker--//
 		}
 		direction = mousePosition2 - transform.position;                  //---Get the point and direction---//
 		direction.Normalize();
@@ -120,8 +140,8 @@ public class StrikerController : MonoBehaviour
 	
 	void StrikerReset()                                            //--Set the striker to initial position--//
 	{
-		RB.velocity = Vector2.zero;                                //--Stop moving the striker--//
 	    transform.position = startPos;                              //--Striker to Start position--//
+		RB.velocity = Vector2.zero;                                //--Stop moving the striker--//
 		hasStriked = false;                                         //--has striker = false for hitting again--//
 		isStrikerSet = false;
 		Line.enabled = true;                                         
