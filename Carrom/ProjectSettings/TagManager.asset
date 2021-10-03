@@ -5,7 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Striker
-  - Coins
+  - WhiteCoins
+  - BlackCoins
+  - Queen
   layers:
   - Default
   - TransparentFX

@@ -22,21 +22,22 @@ public class StartCollider : MonoBehaviour             //----Start collider atta
 		if(!isSet)                                                                    //--If striker is not set--//
 		{
 			
-		   if(collision.gameObject.tag == "Coins")                                    //--coins enter the collider--//         
+		   if(collision.gameObject.tag == "WhiteCoins" || collision.gameObject.tag == "BlackCoins" || collision.gameObject.tag == "Queen")                                    //--coins enter the collider--//         
 		  {
 			Striker.GetComponent<CircleCollider2D>().isTrigger = true;     //--Striker's trigger = true to not collide with token 
 			Debug.Log("Striker overlaps token");
-			WarningText.GetComponent<Text>().text = "Striker overlaps token";
 			Striker.GetComponent<StrikerController>().isOverlap = true;    //--Send is overlap to Striker script--//
-	        Striker.GetComponent<StrikerController>().ISStrikerSet = false;//--if overlap we cannot hit the striker -                                                                                        isStrikerSet =  false//
+	        Striker.GetComponent<StrikerController>().ISStrikerSet = false;    //--if overlap we cannot hit the striker -                                                                                        isStrikerSet =  false//
+			WarningText.GetComponent<Text>().text = "Striker overlaps token"; //--UI for overlap--//
+			   
 		  }
 			
 		}
 		else
 		{   
-			WarningText.GetComponent<Text>().text = "";
 			Striker.GetComponent<CircleCollider2D>().isTrigger = false; //---Set the trigger back to false if we move away from coin
 			Striker.GetComponent<StrikerController>().isOverlap = false;//--Overlap = false--//
+			WarningText.GetComponent<Text>().text = "";
 			
 		}
 		
@@ -44,9 +45,9 @@ public class StartCollider : MonoBehaviour             //----Start collider atta
 	
 	void OnTriggerExit2D(Collider2D collision)
 	{
-		    WarningText.GetComponent<Text>().text = "";
 			Striker.GetComponent<CircleCollider2D>().isTrigger = false;  //---Unless it didn't detect the collider then also set                                                                        trigger to false //
 		    Striker.GetComponent<StrikerController>().isOverlap = false;
+		    WarningText.GetComponent<Text>().text = "";
 			
 	}
 }

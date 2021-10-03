@@ -57,12 +57,12 @@ public class StrikerController : MonoBehaviour
 		
 		mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);                 //--Get the mouse position--//
 		
-		mousePosition.x = Mathf.Clamp(mousePosition.x, -2.0f, 2.0f);
+		mousePosition.x = Mathf.Clamp(mousePosition.x, -2.0f, 2.0f);     //--Clamp the value to mouse position in between (-2,2)--//
 		mousePosition.y = Mathf.Clamp(mousePosition.y, -2.0f, 2.0f);
 		mousePosition.z = Mathf.Clamp(mousePosition.z, -2.0f, 2.0f);
 		
 		mousePosition2 = new Vector3(-mousePosition.x, -mousePosition.y, mousePosition.z);   //--Set the touch point according to                                                                                             mouse position--/
-		float powerScale = -mousePosition.x;
+		float powerScale = -mousePosition.x;                       //---Get the mousePosition.x for power circle expansion--//                               
 		
 			
 		if(isOverlap)                                             //--If the token overlaps with striker when striker is not set--// 
@@ -98,8 +98,8 @@ public class StrikerController : MonoBehaviour
 			Line.SetPosition(0, transform.position);     //---Initial position on line i.e start point--//
 		    Line.SetPosition(1, mousePosition2);         //---End point--//
 			
-			float angle = AngleBetweenTwoPoints(Arrow.transform.position, mousePosition2);
-			Arrow.transform.rotation = Quaternion.Euler(0f, 0f, angle + 90);
+			float angle = AngleBetweenTwoPoints(Arrow.transform.position, mousePosition2); //-Get the angle between arrow & mousePos
+			Arrow.transform.rotation = Quaternion.Euler(0f, 0f, angle + 90); //--Assign the rotation to arrow according to direction
 			
 		}
 		
@@ -112,15 +112,14 @@ public class StrikerController : MonoBehaviour
 		{
 			
 			StrikerGlow.SetActive(true);
-			ForceCircle.transform.localScale = new Vector3(Mathf.Abs(powerScale), Mathf.Abs(powerScale), 0);
-		}
+			ForceCircle.transform.localScale = new Vector3(Mathf.Abs(powerScale), Mathf.Abs(powerScale), 0); //--expand the circle 
+		}                                                                                                    // in +ve scale--//
 		else
 		{
 			StrikerGlow.SetActive(false);
-			ForceCircle.transform.localScale = new Vector3(0,0,0);
+			ForceCircle.transform.localScale = new Vector3(0,0,0);            //--disapear the power circle after hitting--//
 		}
 		
-	
 		
 	}
 	
@@ -157,7 +156,7 @@ public class StrikerController : MonoBehaviour
 		Line.enabled = true;                                         
 	}
 	
-	float AngleBetweenTwoPoints(Vector3 a, Vector3 b)
+	float AngleBetweenTwoPoints(Vector3 a, Vector3 b)                   //---Function to get the angle between two points---//
 	{
 		return Mathf.Atan2(a.y - b.y, a.x -b.x) * Mathf.Rad2Deg;
 	}
