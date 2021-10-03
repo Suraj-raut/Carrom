@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class StartCollider : MonoBehaviour             //----Start collider attached to striker to check overlapping--//
 {
 	
 	public GameObject Striker;
 	private bool isSet;
+	public Text WarningText;
 
 	
 	void Update()
@@ -24,13 +26,15 @@ public class StartCollider : MonoBehaviour             //----Start collider atta
 		  {
 			Striker.GetComponent<CircleCollider2D>().isTrigger = true;     //--Striker's trigger = true to not collide with token 
 			Debug.Log("Striker overlaps token");
+			WarningText.GetComponent<Text>().text = "Striker overlaps token";
 			Striker.GetComponent<StrikerController>().isOverlap = true;    //--Send is overlap to Striker script--//
 	        Striker.GetComponent<StrikerController>().ISStrikerSet = false;//--if overlap we cannot hit the striker -                                                                                        isStrikerSet =  false//
 		  }
 			
 		}
 		else
-		{
+		{   
+			WarningText.GetComponent<Text>().text = "";
 			Striker.GetComponent<CircleCollider2D>().isTrigger = false; //---Set the trigger back to false if we move away from coin
 			Striker.GetComponent<StrikerController>().isOverlap = false;//--Overlap = false--//
 			
@@ -40,6 +44,7 @@ public class StartCollider : MonoBehaviour             //----Start collider atta
 	
 	void OnTriggerExit2D(Collider2D collision)
 	{
+		    WarningText.GetComponent<Text>().text = "";
 			Striker.GetComponent<CircleCollider2D>().isTrigger = false;  //---Unless it didn't detect the collider then also set                                                                        trigger to false //
 		    Striker.GetComponent<StrikerController>().isOverlap = false;
 			

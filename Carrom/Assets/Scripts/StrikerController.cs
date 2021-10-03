@@ -17,7 +17,9 @@ public class StrikerController : MonoBehaviour
 	private Rigidbody2D RB;
 	
 	[SerializeField]
-	private Transform ForcePoint;
+	private Transform ForceCircle;
+	[SerializeField]
+	private GameObject Arrow;
 	[SerializeField]
 	private GameObject StrikerGlow;
 	
@@ -42,16 +44,16 @@ public class StrikerController : MonoBehaviour
 	
 	void Start()
 	{
-	     
-		                              //--Get the initial position of striker--//
+	                                
 		StrikerSlider.onValueChanged.AddListener(StrikerXPosition);  //--If the slider is move, the slider value given to method-//
 		RB = GetComponent<Rigidbody2D>();
 	}
 	
 	void Update()
 	{
-        startPos = transform.position;
+        startPos = transform.position;                                          //--Get the initial position of striker--//
 		Line.enabled = false;
+		Arrow.SetActive(false);
 		
 		mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);                 //--Get the mouse position--//
 		
@@ -90,9 +92,15 @@ public class StrikerController : MonoBehaviour
 		
 		if(isStrikerSet && RB.velocity.magnitude == 0)   //---If striker is Set and it is not moving get the line renderer--//
 		{
+			Arrow.SetActive(true);  
+			
 			Line.enabled = true;
 			Line.SetPosition(0, transform.position);     //---Initial position on line i.e start point--//
 		    Line.SetPosition(1, mousePosition2);         //---End point--//
+			
+			float angle = AngleBetweenTwoPoints(Arrow.transform.position, mousePosition2);
+			Arrow.transform.rotation = Quaternion.Euler(0f, 0f, angle + 90);
+			
 		}
 		
 		if(RB.velocity.magnitude < 0.2f && RB.velocity.magnitude != 0 && isStrikerSet) //--If the striker velocity between 0.2 to 0
@@ -104,12 +112,12 @@ public class StrikerController : MonoBehaviour
 		{
 			
 			StrikerGlow.SetActive(true);
-			ForcePoint.transform.localScale = new Vector3(Mathf.Abs(powerScale), Mathf.Abs(powerScale), 0);
+			ForceCircle.transform.localScale = new Vector3(Mathf.Abs(powerScale), Mathf.Abs(powerScale), 0);
 		}
 		else
 		{
 			StrikerGlow.SetActive(false);
-			ForcePoint.transform.localScale = new Vector3(0,0,0);
+			ForceCircle.transform.localScale = new Vector3(0,0,0);
 		}
 		
 	
@@ -147,6 +155,11 @@ public class StrikerController : MonoBehaviour
 		hasStriked = false;                                         //--has striker = false for hitting again--//
 		isStrikerSet = false;
 		Line.enabled = true;                                         
+	}
+	
+	float AngleBetweenTwoPoints(Vector3 a, Vector3 b)
+	{
+		return Mathf.Atan2(a.y - b.y, a.x -b.x) * Mathf.Rad2Deg;
 	}
 	
 
