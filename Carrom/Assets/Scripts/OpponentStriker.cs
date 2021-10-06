@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class StrikerController : MonoBehaviour
+public class OpponentStriker : MonoBehaviour
 {
-	
-	[SerializeField]
+    [SerializeField]
 	private Slider StrikerSlider;
 	
 	[SerializeField]
@@ -40,11 +39,11 @@ public class StrikerController : MonoBehaviour
 	}
 	
 	private Vector3 startPos;
-	
-    [SerializeField]
+	[SerializeField]
 	private GameObject GameManager;
 	
 	public AudioSource Swipe;
+
 	
 	void Start()
 	{
@@ -131,7 +130,6 @@ public class StrikerController : MonoBehaviour
 	
 	void StrikerShoot()                                                  //--If the striker is Set in desired direction--//
 	{
-		
 		float x = 0;
 		if(isStrikerSet && RB.velocity.magnitude == 0)                  
 		{
@@ -149,14 +147,14 @@ public class StrikerController : MonoBehaviour
 	 
 		if(!hasStriked && !isStrikerSet)                            //--Initial position not set and not hit--//
 		{
-			transform.position = new Vector3(Value, -1.57f, 0);     //--move the striker gameobject according to slider value--//
+			transform.position = new Vector3(Value, 1.57f, 0);     //--move the striker gameobject according to slider value--//
 	  
          }
 	}
 	
 	void StrikerReset()                                            //--Set the striker to initial position--//
 	{
-	    transform.position = new Vector3(0, -1.57f, 0);                              //--Striker to Start position--//
+	    transform.position = new Vector3(0, 1.57f, 0);                              //--Striker to Start position--//
 		RB.velocity = Vector2.zero;                                //--Stop moving the striker--//
 		hasStriked = false;                                         //--has striker = false for hitting again--//
 		isStrikerSet = false;
@@ -169,4 +167,4 @@ public class StrikerController : MonoBehaviour
 	}
 	
 
-} 
+}

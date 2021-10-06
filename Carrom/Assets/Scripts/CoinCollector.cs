@@ -5,33 +5,71 @@ using UnityEngine.UI;
 
 public class CoinCollector : MonoBehaviour    //---Four pocket at corners have this script to dected the collision of coins--//
 {
-    public Text ScoreText;
-	private static int score = 0;
+    public Text PlayerScoreText;
+	public static int Playerscore = 0;
+	
+	public Text OpponentScoreText;
+	public static int Opponentscore = 0;
+	
+	[SerializeField]
+	private GameObject GameManager;
 
+    public AudioSource PocketTheCoin;
 	
 	void Update()
 	{
-		ScoreText.GetComponent<Text>().text = "Score : " + score;   //---UI display for score---//
+		PlayerScoreText.GetComponent<Text>().text = Playerscore + "/160";   //---UI display for score---//
+		OpponentScoreText.GetComponent<Text>().text = Opponentscore + "/160";
 	}
 	void OnTriggerEnter2D(Collider2D collision)                     //----If coins comes in contact with the pocket trigger--//
 	{
-		if(collision.gameObject.tag == "WhiteCoins")
-		{
-			score += 20;                                             //--20 points for white coin--//                       
-			Destroy(collision.gameObject);                           //--Destroy the coin--//         
-		}
 		
-		if(collision.gameObject.tag == "BlackCoins")
+		if(GameManager.GetComponent<GameManager>().counter % 2 == 0) //---If counter is even player is active so give point to                                                                              opponent
 		{
-			score += 10;                                              //--10 points for black coin--//   
-			Destroy(collision.gameObject);                           //--Destroy the coin--//         
-		}
+			PocketTheCoin.Play();
+			if(collision.gameObject.tag == "WhiteCoins")
+		   {
+			Playerscore += 20;                                             //--20 points for white coin--//                       
+			Destroy(collision.gameObject);                                //--Destroy the coin--//   
+				
+		   }
 		
-		if(collision.gameObject.tag == "Queen")
+		   if(collision.gameObject.tag == "BlackCoins")
+		   {
+			Playerscore += 10;                                              //--10 points for black coin--//   
+			Destroy(collision.gameObject);                           //--Destroy the coin--//  
+		
+		   }
+		
+		  if(collision.gameObject.tag == "Queen")
+		  {
+			Playerscore += 50;                                               //--50 points for queen --//   
+			Destroy(collision.gameObject);                            //--Destroy the coin--// 
+			
+		  }
+		}
+		if(GameManager.GetComponent<GameManager>().counter % 2 != 0) //---If counter is odd opponent is active so give point to                                                                              opponent
 		{
-			score += 50;                                               //--50 points for queen --//   
+	
+			if(collision.gameObject.tag == "WhiteCoins")
+		   {
+			Opponentscore += 20;                                             //--20 points for white coin--//                       
+			Destroy(collision.gameObject);                                    //--Destroy the coin--//         
+		   }
+		
+		   if(collision.gameObject.tag == "BlackCoins")
+		   {
+			Opponentscore += 10;                                              //--10 points for black coin--//   
+			Destroy(collision.gameObject);                           //--Destroy the coin--//         
+		   }
+		
+		  if(collision.gameObject.tag == "Queen")
+		  {
+			Opponentscore += 50;                                               //--50 points for queen --//   
 			Destroy(collision.gameObject);                            //--Destroy the coin--//         
+		  }
 		}
+		
 		
 	}
 }
