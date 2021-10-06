@@ -19,13 +19,5 @@ public class UIManager : MonoBehaviour
 		SceneManager.LoadScene("Menu");
 	}
 	
-	 public void StartTheGame()                   //--Start Game--//
-    {
-	  SceneManager.LoadScene("Game"); 
-    }
 	
-    public void QuitTheGame()                  //--Quit game--//
-    {
-	  Application.Quit();
-    }
 }
