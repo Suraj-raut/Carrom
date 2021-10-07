@@ -130,6 +130,11 @@ public class StrikerController : MonoBehaviour
 				powerScale = -mousePosition.y; 
 				ForceCircle.transform.localScale = new Vector3(Mathf.Abs(powerScale), Mathf.Abs(powerScale), 0); 
 			}
+			
+			if((mousePosition.x == 2.0f || mousePosition.x == -2.0f) || (mousePosition.y == 2.0f || mousePosition.y == -2.0f))
+			{
+				ForceCircle.transform.localScale = new Vector3(2,2,0);
+			}
 			 
 			
 		}                                                                                                   
