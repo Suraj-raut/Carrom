@@ -65,8 +65,7 @@ public class OpponentStriker : MonoBehaviour
 		mousePosition.z = Mathf.Clamp(mousePosition.z, -2.0f, 2.0f);
 		
 		mousePosition2 = new Vector3(-mousePosition.x, -mousePosition.y, mousePosition.z);   //--Set the touch point according to                                                                                             mouse position--/
-		float powerScale = -mousePosition.x;                       //---Get the mousePosition.x for power circle expansion--//                               
-		
+		                                   
 			
 		if(isOverlap)                                             //--If the token overlaps with striker when striker is not set--// 
 		{
@@ -115,10 +114,22 @@ public class OpponentStriker : MonoBehaviour
 		
 		if(!hasStriked)                                     //---Striker glow set active to false after we hit--//
 		{
+			float powerScale; 
 			
 			StrikerGlow.SetActive(true);
-			ForceCircle.transform.localScale = new Vector3(Mathf.Abs(powerScale), Mathf.Abs(powerScale), 0); //--expand the circle 
-		}                                                                                                    // in +ve scale--//
+			if((mousePosition.x <= -0.5f || mousePosition.x >= 0.5f))
+			{
+				powerScale = -mousePosition.x; 
+				ForceCircle.transform.localScale = new Vector3(Mathf.Abs(powerScale), Mathf.Abs(powerScale), 0); 
+			}
+			
+			else
+			{
+				powerScale = -mousePosition.y; 
+				ForceCircle.transform.localScale = new Vector3(Mathf.Abs(powerScale), Mathf.Abs(powerScale), 0); 
+			}
+			 
+		}                                                                                                   
 		else
 		{
 			StrikerGlow.SetActive(false);
